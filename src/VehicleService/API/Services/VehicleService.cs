@@ -16,7 +16,7 @@ namespace API.Services
 
         public override async Task<CreateVehicleRs> CreateVehicle(CreateVehicleRq request, ServerCallContext context)
         {
-            try
+/*            try
             {
                 var vehicle = new Vehicle(request.Name, request.MaxSpeed);
                 _vehicleRepository.Add(vehicle);
@@ -30,7 +30,7 @@ namespace API.Services
                     Success = false,
                 });
             }
-
+*/
 
             return await Task.FromResult(new CreateVehicleRs
             {

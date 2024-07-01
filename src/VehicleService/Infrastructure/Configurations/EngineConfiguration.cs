@@ -9,12 +9,16 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Engine> builder)
         {
-            builder.Property(p => p.Vehicle)
-                .IsRequired();
+            builder.HasKey(x => x.Id);
 
             builder.Property(p => p.EngineType)
                 .IsRequired()
                 .HasConversion<string>();
+
+            builder.HasOne(p => p.Vehicle)
+                .WithOne(p => p.Engine)
+                .HasForeignKey<Vehicle>(p => p.Id)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
