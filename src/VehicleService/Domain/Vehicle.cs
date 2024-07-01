@@ -23,4 +23,5 @@ public class Vehicle
         Engine = engine;
         ParkingPlaceId = parkingPlaceId;
     }
+
 }

@@ -12,8 +12,7 @@ service Vehicles {
 
 message CreateVehicleRq {
 	string name = 1;
-	int32 maxSpeed = 2;
-	string parkingPlaceId = 3;
+	string parkingPlaceId = 2;
 }
 
 message CreateVehicleRs {
@@ -27,7 +26,6 @@ message GetVehicleRq {
 message GetVehicleRs {
 	string id = 1;
 	string name = 2;
-	int32 maxSpeed = 3;
 }
 
 message DeleteVehicleRq {
