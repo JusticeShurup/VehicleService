@@ -14,9 +14,6 @@ namespace Infrastructure.Configurations
             builder.Property(p => p.Name)
                 .IsRequired();
 
-            builder.Property(p => p.MaxSpeed)
-                .IsRequired();
-
             builder.Property(p => p.ParkingPlaceId)
                 .IsRequired();
 

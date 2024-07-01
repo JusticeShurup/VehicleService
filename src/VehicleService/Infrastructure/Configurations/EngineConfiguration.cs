@@ -11,6 +11,7 @@ namespace Infrastructure.Configurations
         {
             builder.HasKey(x => x.Id);
 
+
             builder.Property(p => p.EngineType)
                 .IsRequired()
                 .HasConversion<string>();
