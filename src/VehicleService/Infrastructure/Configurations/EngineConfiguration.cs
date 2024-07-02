@@ -18,7 +18,7 @@ namespace Infrastructure.Configurations
 
             builder.HasOne(p => p.Vehicle)
                 .WithOne(p => p.Engine)
-                .HasForeignKey<Vehicle>(p => p.Id)
+                .HasForeignKey<Vehicle>("EngineId")
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(VehicleContext))]
-    [Migration("20240701083508_Initial")]
+    [Migration("20240702134513_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -49,20 +49,20 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Vehicle", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("MaxSpeed")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("EngineId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("ParkingPlaceId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EngineId")
+                        .IsUnique();
 
                     b.ToTable("Vehicles");
                 });
@@ -71,7 +71,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Engine", "Engine")
                         .WithOne("Vehicle")
-                        .HasForeignKey("Domain.Vehicle", "Id")
+                        .HasForeignKey("Domain.Vehicle", "EngineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

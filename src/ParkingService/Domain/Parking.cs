@@ -46,13 +46,32 @@ public class Parking
         }
     }
 
-    public void AddVehicle(Guid? vehicleId)
+
+    /// <summary>
+    /// Returns ParkingPlaceId if result is true
+    /// </summary>
+    /// <param name="vehicleId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public Guid? AddVehicle(Guid vehicleId)
     {
+        if (IsVehicleInParking(vehicleId))
+        {
+            return null;
+        }
         var parkingPlace = ParkingPlaces.Where(p => p.VehicleId == null).FirstOrDefault();
         if (parkingPlace == null)
         {
-            throw new Exception("There are no free places");
+            return null;
         }
         parkingPlace.VehicleId = vehicleId;
+
+        return parkingPlace.Id;
     }
+    
+    public bool IsVehicleInParking(Guid vehicleId)
+    {
+        return ParkingPlaces.Any(p => p.VehicleId == vehicleId);
+    }
+
 }

@@ -1,5 +1,5 @@
-﻿using Domain;
-using Domain.Interface;
+﻿using Application.Interfaces;
+using Domain;
 using Grpc.Core;
 using ProtosContract;
 
@@ -16,9 +16,11 @@ namespace API.Services
 
         public override async Task<CreateVehicleRs> CreateVehicle(CreateVehicleRq request, ServerCallContext context)
         {
-          try
+            try
             {
-                var vehicle = new Vehicle(request.Name);
+                EngineType type = (EngineType)request.EngineType;
+                var engine = new Engine(100, EngineType.Gasoline);
+                var vehicle = new Vehicle(request.Name, engine);
                 _vehicleRepository.Add(vehicle);
                 await _vehicleRepository.UnitOfWork.SaveChangesAsync();
             }

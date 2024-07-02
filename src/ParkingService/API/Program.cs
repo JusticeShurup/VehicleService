@@ -1,10 +1,15 @@
 using Infrastructure;
 using API.Services;
+using ProtosContract;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Vehicles.VehiclesClient>(options =>
+{
+    options.Address = new Uri("https://localhost:7154");
+});
 builder.Services.AddInfrastructure(configuration);
 
 var app = builder.Build();

@@ -1,0 +1,3 @@
+docker run  --name ParkingDb -e POSTGRES_PASSWORD=super -p 5433:5432 -d postgres
+
+docker run  --name VehicleDb -e POSTGRES_PASSWORD=super -p 5432:5432 -d postgres

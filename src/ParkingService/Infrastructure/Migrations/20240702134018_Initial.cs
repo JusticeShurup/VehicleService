@@ -36,7 +36,7 @@ namespace Infrastructure.Migrations
                     IsWithElectricityCharge = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
-                { 
+                {
                     table.PrimaryKey("PK_ParkingPlaces", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ParkingPlaces_Parkings_ParkingId",

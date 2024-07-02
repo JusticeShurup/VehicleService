@@ -1,5 +1,5 @@
-﻿using Domain;
-using Domain.Interface;
+﻿using Application.Interfaces;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

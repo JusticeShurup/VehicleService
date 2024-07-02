@@ -31,19 +31,24 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    MaxSpeed = table.Column<int>(type: "integer", nullable: false),
-                    ParkingPlaceId = table.Column<Guid>(type: "uuid", nullable: false)
+                    EngineId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vehicles_Engines_Id",
-                        column: x => x.Id,
+                        name: "FK_Vehicles_Engines_EngineId",
+                        column: x => x.EngineId,
                         principalTable: "Engines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_EngineId",
+                table: "Vehicles",
+                column: "EngineId",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -11,16 +11,15 @@ namespace Domain
         public Guid Id { get; private set; }
         public int Capacity { get; private set; }
         public int FuelQuantity { get; set; }
-        public virtual Vehicle Vehicle { get; private set; }
+        public virtual Vehicle Vehicle { get; internal set; }
         public EngineType EngineType { get; private set; }
 
         private Engine() { }
-        public Engine(int capacity, Vehicle vehicle, EngineType engineType)
+        public Engine(int capacity, EngineType engineType)
         {
 
             Capacity = capacity;
             FuelQuantity = 100;
-            Vehicle = vehicle;
             EngineType = engineType;
         }
     }

@@ -12,7 +12,7 @@ service Vehicles {
 
 message CreateVehicleRq {
 	string name = 1;
-	string parkingPlaceId = 2;
+	int32 engineType = 2;
 }
 
 message CreateVehicleRs {

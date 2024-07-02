@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "ProtosContract";
+import "google/protobuf/wrappers.proto";
 
 package parking;
 
@@ -25,5 +26,5 @@ message ParkVehicleRq {
 }
 
 message ParkVehicleRs {
-	bool success = 1;
+	google.protobuf.StringValue parkingPlaceId = 1;
 }
