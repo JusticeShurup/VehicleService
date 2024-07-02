@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Base.Command;
+using Application.Features.Commands.CreateParking;
+using Application.Interfaces;
 using Grpc.Core;
 using ProtosContract;
 
@@ -7,24 +9,28 @@ namespace API.Services
     public class ParkingService : Parking.ParkingBase
     {
         private readonly IParkingRepository _parkingRepository;
-        private readonly IParkingPlaceRepository _parkingPlaceRepository;
         private readonly Vehicles.VehiclesClient _vehiclesClient;
-
+        private readonly ICommandBus _commandBus;
 
         public ParkingService(IParkingRepository parkingRepository,
-            IParkingPlaceRepository parkingPlaceRepository,
-            Vehicles.VehiclesClient vehiclesClient)
+            Vehicles.VehiclesClient vehiclesClient,
+            ICommandBus commandBus)
         {
             _parkingRepository = parkingRepository;
-            _parkingPlaceRepository = parkingPlaceRepository;
             _vehiclesClient = vehiclesClient;
+            _commandBus = commandBus;
         }
 
         public override async Task<CreateParkingRs> CreateParking(CreateParkingRq request, ServerCallContext context)
         {
-            Domain.Parking parking = new Domain.Parking(request.MaxFloor, request.PlacesPerFloor, request.Address);
-            _parkingRepository.Add(parking);
-            await _parkingPlaceRepository.UnitOfWork.SaveChangesAsync();
+            try
+            {
+                await _commandBus.Send(new CreateParkingCommand(request.MaxFloor, request.PlacesPerFloor, request.Address));
+            }
+            catch (Exception ex)
+            {
+                return new CreateParkingRs() { Success = false };
+            }
 
             return new CreateParkingRs() { Success = true };
         }
