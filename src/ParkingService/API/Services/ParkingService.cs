@@ -56,7 +56,7 @@ namespace API.Services
 
             try
             {
-                await _commandBus.Send(new ParkVehicleCommand(vehicleId, parkingId));
+                await _commandBus.Send(new ParkVehicleCommand(parkingId, vehicleId));
             }
             catch (Exception ex)
             {

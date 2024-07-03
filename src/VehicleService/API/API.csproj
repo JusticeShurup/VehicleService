@@ -5,12 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Protobuf ProtoRoot=".." Link="Protos/parking.proto" Include="../../Protos/parking.proto;" AdditionalImportDirs="../../" GrpcServices="Client" />
-		<Protobuf ProtoRoot=".." Link="Protos/vehicles.proto" Include="../../Protos/vehicles.proto;" AdditionalImportDirs="../../" GrpcServices="Server" />
-	</ItemGroup>
-
+  
 	<ItemGroup>
 		<PackageReference Include="Google.Protobuf" Version="3.27.2" />
 		<PackageReference Include="Google.Protobuf.Tools" Version="3.27.2" />
@@ -21,6 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Proto\Proto.csproj" />
 	  <ProjectReference Include="..\Domain\Domain.csproj" />
 	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>

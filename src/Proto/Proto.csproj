@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="parking.proto" />
+    <None Remove="vehicles.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="parking.proto" />
+    <Protobuf Include="vehicles.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.15.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.2" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.27.2" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
+  </ItemGroup>
+  
+</Project>

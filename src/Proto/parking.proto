@@ -2,13 +2,21 @@ syntax = "proto3";
 
 option csharp_namespace = "ProtosContract";
 import "google/protobuf/wrappers.proto";
-import "../../google/api/http.proto";
+import "google/api/annotations.proto";
 
 package parking;
 
 service Parking {
-	rpc CreateParking(CreateParkingRq) returns (CreateParkingRs);
-	rpc ParkVehicle(ParkVehicleRq) returns (ParkVehicleRs);
+	rpc CreateParking(CreateParkingRq) returns (CreateParkingRs) {
+		option (google.api.http) = {
+			post: "/v1/CreateParking"
+		};
+	}
+	rpc ParkVehicle(ParkVehicleRq) returns (ParkVehicleRs) {
+		option (google.api.http) = {
+			put: "/v1/ParkVehicle" 
+		};
+	}
 	rpc GetParking(GetParkingRq) returns (GetParkingRs); 
 	rpc GetAllParkings(GetAllParkingsRq) returns (GetAllParkingsRs);
 	rpc DeleteParking(DeleteParkingRq) returns (DeleteParkingRs);
