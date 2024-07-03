@@ -2,22 +2,34 @@ syntax = "proto3";
 
 option csharp_namespace = "ProtosContract";
 import "google/protobuf/wrappers.proto";
+import "../../google/api/http.proto";
 
 package parking;
 
 service Parking {
 	rpc CreateParking(CreateParkingRq) returns (CreateParkingRs);
 	rpc ParkVehicle(ParkVehicleRq) returns (ParkVehicleRs);
+	rpc GetParking(GetParkingRq) returns (GetParkingRs); 
+	rpc GetAllParkings(GetAllParkingsRq) returns (GetAllParkingsRs);
+	rpc DeleteParking(DeleteParkingRq) returns (DeleteParkingRs);
+}
+
+message ParkingDto {
+	string id = 1;
+	int32 floorCount = 2;
+	int32 placesPerFloor = 3;
+	string address = 4;
 }
 
 message CreateParkingRq {
-	int32 maxFloor = 1; 
+	int32 floorCount = 1; 
 	int32 placesPerFloor = 2; 
 	string address = 3;
 }
 
 message CreateParkingRs {
 	bool success = 1;
+	string Error = 2;
 }
 
 message ParkVehicleRq {
@@ -26,5 +38,35 @@ message ParkVehicleRq {
 }
 
 message ParkVehicleRs {
-	google.protobuf.StringValue parkingPlaceId = 1;
+	bool success = 1;
+	string Error = 2;
+}
+
+message GetAllParkingsRq {
+
+}
+
+message GetAllParkingsRs {
+	bool success = 1;
+	string error = 2;
+	repeated ParkingDto parkings = 3;
+}
+
+message GetParkingRq {
+	string id = 1;
+}
+
+message GetParkingRs {
+	bool success = 1;
+	string error = 2;
+	optional ParkingDto parking = 3;
+}
+
+message DeleteParkingRq {
+	string id = 1;
+}
+
+message DeleteParkingRs {
+	bool success = 1;
+	string error = 2;
 }
