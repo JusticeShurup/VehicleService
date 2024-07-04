@@ -1,13 +1,36 @@
 syntax = "proto3";
 
 option csharp_namespace = "ProtosContract";
+import "google/api/annotations.proto";
 
 package vehicles;
 
 service Vehicles {
-	rpc CreateVehicle(CreateVehicleRq) returns (CreateVehicleRs);
-	rpc GetVehicle(GetVehicleRq) returns (GetVehicleRs);
-	rpc DeleteVehicle(DeleteVehicleRq) returns (DeleteVehicleRs);
+	rpc CreateVehicle(CreateVehicleRq) returns (CreateVehicleRs) {
+		option (google.api.http) = {
+			post: "/v1/CreateVehicle";
+		};
+	}
+	rpc GetVehicle(GetVehicleRq) returns (GetVehicleRs) {
+		option (google.api.http) = {
+			get: "/v1/GetVehicle";
+		};
+	}
+	rpc GetAllVehicles(GetAllVehiclesRq) returns (GetAllVehiclesRs) {
+		option (google.api.http) = {
+			get: "/v1/GetAllVehicles";
+		};
+	}
+	rpc DeleteVehicle(DeleteVehicleRq) returns (DeleteVehicleRs) {
+		option (google.api.http) = {
+			delete: "/v1/DeleteVehicle";
+		};
+	}
+}
+
+message VehicleDto {
+	string id = 1;
+	string name = 2;
 }
 
 message CreateVehicleRq {
@@ -17,15 +40,26 @@ message CreateVehicleRq {
 
 message CreateVehicleRs {
 	bool success = 1;
+	string error = 2;
 }
 
 message GetVehicleRq {
-	string vehicleId = 1;
+	string id = 1;
 }
 
 message GetVehicleRs {
-	string id = 1;
-	string name = 2;
+	bool success = 1;
+	string error = 2;
+	optional VehicleDto vehicle = 3;
+}
+
+message GetAllVehiclesRq {
+}
+
+message GetAllVehiclesRs {
+	bool success = 1;
+	string error = 2;
+	repeated VehicleDto vehicles = 3;
 }
 
 message DeleteVehicleRq {
@@ -34,4 +68,5 @@ message DeleteVehicleRq {
 
 message DeleteVehicleRs {
 	bool success = 1;
+	string error = 2;
 }

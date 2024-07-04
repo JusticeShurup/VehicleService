@@ -1,4 +1,10 @@
-﻿using Application.Interfaces;
+﻿using Application.Base.Command;
+using Application.Base.Query;
+using Application.Features.Commands.CreateVehicle;
+using Application.Features.Commands.DeleteVehicle;
+using Application.Features.Queries.GetAllVehicles;
+using Application.Features.Queries.GetVehicle;
+using Application.Interfaces;
 using Domain;
 using Grpc.Core;
 using ProtosContract;
@@ -7,70 +13,116 @@ namespace API.Services
 {
     public class VehiclesService : Vehicles.VehiclesBase
     {
-        private readonly IVehicleRepository _vehicleRepository;
+        private readonly ICommandBus _commandBus;
+        private readonly IQueryBus _queryBus;
 
-        public VehiclesService(IVehicleRepository vehicleRepository)
+        public VehiclesService(ICommandBus commandBus, IQueryBus queryBus)
         {
-            _vehicleRepository = vehicleRepository;
+            _commandBus = commandBus;
+            _queryBus = queryBus;
         }
 
         public override async Task<CreateVehicleRs> CreateVehicle(CreateVehicleRq request, ServerCallContext context)
         {
             try
             {
-                EngineType type = (EngineType)request.EngineType;
-                var engine = new Engine(100, EngineType.Gasoline);
-                var vehicle = new Vehicle(request.Name, engine);
-                _vehicleRepository.Add(vehicle);
-                await _vehicleRepository.UnitOfWork.SaveChangesAsync();
+                await _commandBus.Send(new CreateVehicleCommand(request.Name, (EngineType)request.EngineType));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return await Task.FromResult(new CreateVehicleRs()
                 {
                     Success = false,
+                    Error = ex.Message,
                 });
             }
 
 
             return await Task.FromResult(new CreateVehicleRs
             {
-                Success = true
+                Success = true,
+                Error = "",
             });
         }
 
         public override async Task<GetVehicleRs> GetVehicle(GetVehicleRq request, ServerCallContext context)
         {
-            var vehicle = await _vehicleRepository.FindByIdAsync(Guid.Parse(request.VehicleId));
-
-            if (vehicle == null)
+            if (!Guid.TryParse(request.Id, out Guid vehicleId))
             {
-                throw new Exception();
+                return new GetVehicleRs()
+                {
+                    Success = false,
+                    Error = "Inccorrect id structure"
+                };
             }
 
+            Vehicle vehicle;
+            try
+            {
+                vehicle = await _queryBus.Send<Vehicle>(new GetVehicleQuery(vehicleId));
+            }
+            catch (Exception ex)
+            {
+                return new GetVehicleRs()
+                {
+                    Success = false,
+                    Error = ex.Message,
+                };
+            }
+            
             return new GetVehicleRs()
             {
-                Id = vehicle.Id.ToString(),
-                Name = vehicle.Name,
+                Success = true,
+                Error = "",
+                Vehicle = new VehicleDto
+                {
+                    Id = vehicle.Id.ToString(),
+                    Name = vehicle.Name
+                }
             };
+        }
+
+        public override async Task<GetAllVehiclesRs> GetAllVehicles(GetAllVehiclesRq request, ServerCallContext context)
+        {
+            var result = await _queryBus.Send<IEnumerable<Vehicle>>(new GetAllVehiclesQuery());
+
+            var response = new GetAllVehiclesRs()
+            {
+                Success = true,
+                Error = ""
+            };
+
+            foreach (var vehicle in result)
+            {
+                response.Vehicles.Add(new VehicleDto() { Id = vehicle.Id.ToString(), Name = vehicle.Name});
+            }
+
+            return response;
         }
 
         public override async Task<DeleteVehicleRs> DeleteVehicle(DeleteVehicleRq request, ServerCallContext context)
         {
-            var parseResult = Guid.TryParse(request.Id, out Guid vehicleId);
-            if (!parseResult)
+            if (!Guid.TryParse(request.Id, out Guid vehicleId))
             {
-                return new DeleteVehicleRs() { Success = false };
-            }
-            Vehicle? vehicle = await _vehicleRepository.FindByIdAsync(vehicleId);
-            if (vehicle == null)
-            {
-                return new DeleteVehicleRs() { Success = false };
+                return new DeleteVehicleRs()
+                {
+                    Success = false,
+                    Error = "Incorrect Id structure"
+                };
             }
 
-            _vehicleRepository.Remove(vehicle);
-            await _vehicleRepository.UnitOfWork.SaveChangesAsync();
+            try
+            {
+                await _commandBus.Send(new DeleteVehicleCommand(vehicleId));
+            }
+            catch (Exception ex)
+            {
+                return new DeleteVehicleRs
+                {
+                    Success = false,
+                    Error = ex.ToString()
+                };
+            }
 
             return new DeleteVehicleRs { Success = true };
         }

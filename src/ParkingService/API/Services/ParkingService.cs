@@ -1,30 +1,23 @@
-﻿using API.Features.Commands.CreateParking;
-using API.Features.Commands.DeleteParking;
-using API.Features.Commands.ParkVehicle;
-using API.Features.Queries.GetParking;
-using Application.Base.Command;
+﻿using Application.Base.Command;
 using Application.Base.Query;
+using Application.Features.Queries.GetParking;
+using Application.Features.Commands.CreateParking;
 using Application.Interfaces;
-using Google.Protobuf.Collections;
 using Grpc.Core;
 using ProtosContract;
+using Application.Features.Commands.ParkVehicle;
+using Application.Features.Commands.DeleteParking;
+using Application.Features.Queries.GetAllParkings;
 
 namespace API.Services
 {
     public class ParkingService : Parking.ParkingBase
     {
-        private readonly IParkingRepository _parkingRepository;
-        private readonly Vehicles.VehiclesClient _vehiclesClient;
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
 
-        public ParkingService(IParkingRepository parkingRepository,
-            Vehicles.VehiclesClient vehiclesClient,
-            ICommandBus commandBus,
-            IQueryBus queryBus)
+        public ParkingService(ICommandBus commandBus, IQueryBus queryBus)
         {
-            _parkingRepository = parkingRepository;
-            _vehiclesClient = vehiclesClient;
             _commandBus = commandBus;
             _queryBus = queryBus;
         }
@@ -63,14 +56,15 @@ namespace API.Services
                 return new ParkVehicleRs()
                 {
                     Success = false, 
-                    Error = ex.Message,
+                    Error = ex.Message, 
+
                 };
             }
 
             return new ParkVehicleRs()
             {
                 Success = true,
-                Error = null
+                Error = ""
             };
         }
 
@@ -111,7 +105,7 @@ namespace API.Services
 
         public override async Task<GetAllParkingsRs> GetAllParkings(GetAllParkingsRq request, ServerCallContext context)
         {
-            var parkings = await _parkingRepository.GetAllAsync();
+            var parkings = await _queryBus.Send<IEnumerable<Domain.Parking>>(new GetAllParkingsQuery());
             var response = new GetAllParkingsRs()
             {
                 Success = true,

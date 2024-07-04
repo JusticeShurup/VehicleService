@@ -17,9 +17,21 @@ service Parking {
 			put: "/v1/ParkVehicle" 
 		};
 	}
-	rpc GetParking(GetParkingRq) returns (GetParkingRs); 
-	rpc GetAllParkings(GetAllParkingsRq) returns (GetAllParkingsRs);
-	rpc DeleteParking(DeleteParkingRq) returns (DeleteParkingRs);
+	rpc GetParking(GetParkingRq) returns (GetParkingRs) {
+		option (google.api.http) = {
+			get: "/v1/GetParking/{id}"
+		};
+	}
+	rpc GetAllParkings(GetAllParkingsRq) returns (GetAllParkingsRs) {
+		option (google.api.http) = {
+			get: "/v1/GetParkings"
+		};
+	}
+	rpc DeleteParking(DeleteParkingRq) returns (DeleteParkingRs) {
+		option (google.api.http) = {
+			delete: "/v1/DeleteParking"
+		};
+	}
 }
 
 message ParkingDto {

@@ -43,5 +43,10 @@ namespace Infrastructure.Repositories
         {
             _context.Remove(vehicle);
         }
+
+        public async Task<IEnumerable<Vehicle>> GetAllAsync()
+        {
+            return await _context.Vehicles.Include(p => p.Engine).ToListAsync();
+        }
     }
 }
