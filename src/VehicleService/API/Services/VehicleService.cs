@@ -26,6 +26,15 @@ namespace API.Services
         {
             try
             {
+                var enumValues = Enum.GetValues(typeof(EngineType));
+                if (request.EngineType <= 0 || request.EngineType > enumValues.Length)
+                {
+                    return new CreateVehicleRs()
+                    {
+                        Success = false,
+                        Error = "Engine with this type doesn't exists"
+                    };
+                }
                 await _commandBus.Send(new CreateVehicleCommand(request.Name, (EngineType)request.EngineType));
             }
             catch (Exception ex)
@@ -36,7 +45,6 @@ namespace API.Services
                     Error = ex.Message,
                 });
             }
-
 
             return await Task.FromResult(new CreateVehicleRs
             {

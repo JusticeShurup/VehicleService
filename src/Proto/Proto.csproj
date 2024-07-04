@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="parking.proto" />
     <None Remove="vehicles.proto" />
   </ItemGroup>
 
