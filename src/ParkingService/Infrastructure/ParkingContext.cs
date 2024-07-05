@@ -9,6 +9,7 @@ public class ParkingContext : DbContext, IUnitOfWork
 {
     public DbSet<ParkingPlace> ParkingPlaces { get; set; }
     public DbSet<Parking> Parkings { get; set; }
+    public DbSet<Abonement> Abonements { get; set; }
 
     public ParkingContext() : base() { }
 
@@ -18,6 +19,7 @@ public class ParkingContext : DbContext, IUnitOfWork
     {
         modelBuilder.ApplyConfiguration(new ParkingConfiguration());
         modelBuilder.ApplyConfiguration(new ParkingPlaceConfiguration());
+        modelBuilder.ApplyConfiguration(new AbonementConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 }
