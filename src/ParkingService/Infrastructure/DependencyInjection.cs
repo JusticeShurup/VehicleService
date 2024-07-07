@@ -21,6 +21,7 @@ namespace Infrastructure
 
             services.AddScoped<IParkingPlaceRepository, ParkingPlaceRepository>();
             services.AddScoped<IParkingRepository, ParkingRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
             return services;
         }

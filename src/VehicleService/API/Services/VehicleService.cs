@@ -85,7 +85,14 @@ namespace API.Services
                 Vehicle = new VehicleDto
                 {
                     Id = vehicle.Id.ToString(),
-                    Name = vehicle.Name
+                    Name = vehicle.Name,
+                    Engine = new EngineDto()
+                    {
+                        Id = vehicle.Engine.Id.ToString(),
+                        Capacity = vehicle.Engine.Capacity,
+                        EngineType = (int)vehicle.Engine.EngineType,
+                        FuelQuantity = vehicle.Engine.FuelQuantity,
+                    }
                 }
             };
         }
@@ -102,7 +109,18 @@ namespace API.Services
 
             foreach (var vehicle in result)
             {
-                response.Vehicles.Add(new VehicleDto() { Id = vehicle.Id.ToString(), Name = vehicle.Name});
+                response.Vehicles.Add(new VehicleDto() 
+                { 
+                    Id = vehicle.Id.ToString(), 
+                    Name = vehicle.Name,
+                    Engine = new EngineDto()
+                    {
+                        Id = vehicle.Engine.Id.ToString(),
+                        Capacity = vehicle.Engine.Capacity,
+                        EngineType = (int)vehicle.Engine.EngineType,
+                        FuelQuantity = vehicle.Engine.FuelQuantity,
+                    }
+                });
             }
 
             return response;

@@ -46,15 +46,45 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParkingPlaceId = table.Column<Guid>(type: "uuid", nullable: false),
+                    VehicleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParkingStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ParkingEndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_ParkingPlaces_ParkingPlaceId",
+                        column: x => x.ParkingPlaceId,
+                        principalTable: "ParkingPlaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ParkingPlaces_ParkingId",
                 table: "ParkingPlaces",
                 column: "ParkingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_ParkingPlaceId",
+                table: "Subscriptions",
+                column: "ParkingPlaceId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Subscriptions");
+
             migrationBuilder.DropTable(
                 name: "ParkingPlaces");
 

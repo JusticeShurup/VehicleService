@@ -53,20 +53,29 @@ public class Parking
     /// <param name="vehicleId"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public Guid? AddVehicle(Guid vehicleId)
+    public ParkingPlace? AddVehicle(Guid vehicleId, bool isVehicleElectiricity = false)
     {
         if (IsVehicleInParking(vehicleId))
         {
-            return null;
+            throw new Exception("Vehicle is already parked");
         }
-        var parkingPlace = ParkingPlaces.Where(p => p.VehicleId == null).FirstOrDefault();
-        if (parkingPlace == null)
+        var parkingPlaces = ParkingPlaces.Where(p => p.VehicleId == null).ToList();
+        if (parkingPlaces.Count == 0)
         {
-            return null;
+            throw new Exception("No free places");
         }
+        if (isVehicleElectiricity)
+        {
+            var electricityParkingPlace = parkingPlaces.Where(p => p.IsWithElectricityCharge).FirstOrDefault();
+            if (electricityParkingPlace != null)
+            {
+                electricityParkingPlace.VehicleId = vehicleId;
+                return electricityParkingPlace;
+            }
+        }
+        var parkingPlace = parkingPlaces.First();
         parkingPlace.VehicleId = vehicleId;
-
-        return parkingPlace.Id;
+        return parkingPlace;
     }
     
     public bool IsVehicleInParking(Guid vehicleId)

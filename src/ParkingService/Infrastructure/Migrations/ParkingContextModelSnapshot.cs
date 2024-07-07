@@ -22,31 +22,6 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Abonement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ParkingEndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ParkingPlaceId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ParkingStartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("VehicleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParkingPlaceId");
-
-                    b.ToTable("Abonements");
-                });
-
             modelBuilder.Entity("Domain.Parking", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,15 +68,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("ParkingPlaces");
                 });
 
-            modelBuilder.Entity("Domain.Abonement", b =>
+            modelBuilder.Entity("Domain.Subscription", b =>
                 {
-                    b.HasOne("Domain.ParkingPlace", "ParkingPlace")
-                        .WithMany()
-                        .HasForeignKey("ParkingPlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.Navigation("ParkingPlace");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ParkingEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ParkingPlaceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ParkingStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParkingPlaceId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Domain.ParkingPlace", b =>
@@ -113,6 +105,17 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Parking");
+                });
+
+            modelBuilder.Entity("Domain.Subscription", b =>
+                {
+                    b.HasOne("Domain.ParkingPlace", "ParkingPlace")
+                        .WithMany()
+                        .HasForeignKey("ParkingPlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParkingPlace");
                 });
 
             modelBuilder.Entity("Domain.Parking", b =>

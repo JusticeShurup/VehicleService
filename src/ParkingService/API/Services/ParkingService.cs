@@ -8,18 +8,25 @@ using ProtosContract;
 using Application.Features.Commands.ParkVehicle;
 using Application.Features.Commands.DeleteParking;
 using Application.Features.Queries.GetAllParkings;
+using Application.Features.Commands.TakeVehicle;
+using Application.Features.Commands.UpdateParkingPlace;
+using Domain;
+using Application.Features.Queries.GetAllParkingPlaces;
+using AutoMapper;
 
 namespace API.Services
 {
-    public class ParkingService : Parking.ParkingBase
+    public class ParkingService : ProtosContract.Parking.ParkingBase
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;
+        private readonly IMapper _mapper;
 
-        public ParkingService(ICommandBus commandBus, IQueryBus queryBus)
+        public ParkingService(ICommandBus commandBus, IQueryBus queryBus, IMapper mapper)
         {
             _commandBus = commandBus;
             _queryBus = queryBus;
+            _mapper = mapper;
         }
 
         public override async Task<CreateParkingRs> CreateParking(CreateParkingRq request, ServerCallContext context)
@@ -153,6 +160,80 @@ namespace API.Services
                 Success = true,
                 Error = ""
             };
+        }
+
+        public override async Task<TakeVehicleRs> TakeVehicle(TakeVehicleRq request, ServerCallContext context)
+        {
+            if (!Guid.TryParse(request.VehicleId, out Guid vehicleId))
+            {
+                return new TakeVehicleRs()
+                {
+                    Success = false,
+                    Error = "Incorrect vehicle Id"
+                };
+            }
+
+            try
+            {
+                await _commandBus.Send(new TakeVehicleCommand(vehicleId));
+            }
+            catch (Exception ex)
+            {
+                return new TakeVehicleRs()
+                {
+                    Success = false,
+                    Error = ex.Message
+                };
+            }
+
+            return new TakeVehicleRs()
+            {
+                Success = true
+            };
+        }
+
+        public override async Task<GetAllParkingPlacesRs> GetAllParkingPlaces(GetAllParkingPlacesRq request, ServerCallContext context)
+        {
+            var parkingPlaces = await _queryBus.Send<IEnumerable<ParkingPlace>>(new GetAllParkingPlacesQuery());
+            var response = new GetAllParkingPlacesRs()
+            {
+                Success = true,
+                Error = "",
+            };
+
+            foreach (var parkingPlace in parkingPlaces)
+            {
+                response.ParkingPlaces.Add(_mapper.Map<ParkingPlaceDto>(parkingPlace));
+            }
+
+            return response;
+        }
+
+        public override async Task<UpdateParkingPlaceRs> UpdateParkingPlace(UpdateParkingPlaceRq request, ServerCallContext context)
+        {
+            if (!Guid.TryParse(request.Id, out Guid parkingPlaceId))
+            {
+                return new UpdateParkingPlaceRs()
+                {
+                    Success = false,
+                    Error = "Incorrect parking place id"
+                };
+            }
+
+            try
+            {
+                await _commandBus.Send(new UpdateParkingPlaceCommand(parkingPlaceId, request.IsWithElectricityCharge));
+            }
+            catch (Exception ex)
+            {
+                return new UpdateParkingPlaceRs()
+                {
+                    Success = false,
+                    Error = ex.Message
+                };
+            }
+
+            return new UpdateParkingPlaceRs() { Success = true, Error = "" };
         }
     }
 }

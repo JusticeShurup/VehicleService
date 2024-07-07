@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "ProtosContract";
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/api/annotations.proto";
 
@@ -9,27 +10,58 @@ package parking;
 service Parking {
 	rpc CreateParking(CreateParkingRq) returns (CreateParkingRs) {
 		option (google.api.http) = {
-			post: "/v1/CreateParking"
+			post: "/api/v1/Parking/CreateParking"
 		};
 	}
 	rpc ParkVehicle(ParkVehicleRq) returns (ParkVehicleRs) {
 		option (google.api.http) = {
-			put: "/v1/ParkVehicle" 
+			put: "/api/v1/Parking/ParkVehicle" 
+		};
+	}
+	rpc TakeVehicle(TakeVehicleRq) returns (TakeVehicleRs) {
+		option (google.api.http) = {
+			put: "/api/v1/Parking/TakeVehicle"
 		};
 	}
 	rpc GetParking(GetParkingRq) returns (GetParkingRs) {
 		option (google.api.http) = {
-			get: "/v1/GetParking/{id}"
+			get: "/api/v1/Parking/GetParking/{id}"
 		};
 	}
 	rpc GetAllParkings(GetAllParkingsRq) returns (GetAllParkingsRs) {
 		option (google.api.http) = {
-			get: "/v1/GetParkings"
+			get: "/api/v1/Parking/GetParkings"
 		};
 	}
 	rpc DeleteParking(DeleteParkingRq) returns (DeleteParkingRs) {
 		option (google.api.http) = {
-			delete: "/v1/DeleteParking"
+			delete: "/api/v1/Parking/DeleteParking"
+		};
+	}
+
+	rpc GetAllParkingPlaces (GetAllParkingPlacesRq) returns (GetAllParkingPlacesRs) {
+		option (google.api.http) = {
+			get: "/api/v1/Parking/GetAllParkingPlaces"
+		};
+	}
+
+	rpc UpdateParkingPlace (UpdateParkingPlaceRq) returns (UpdateParkingPlaceRs) {
+		option (google.api.http) = {
+			put: "/api/v1/Parking/UpdateParkingPlace"
+		};
+	}
+}
+
+service Subscriptions {
+	rpc GetAllSubscriptions(GetAllSubscriptionsRq) returns (GetAllSubscriptionsRs) {
+		option (google.api.http) = {
+			get: "/api/v1/Subscription/GetSubscriptions"
+		};
+	}
+
+	rpc GetVehicleSubcriptionHistory(GetVehicleSubscriptionHistoryRq) returns (GetVehicleSubscriptionHistoryRs) {
+		option (google.api.http) = {
+			get: "/api/v1/Subscription/GetVehicleSubscriptionHistory/{vehicleId}"
 		};
 	}
 }
@@ -39,6 +71,23 @@ message ParkingDto {
 	int32 floorCount = 2;
 	int32 placesPerFloor = 3;
 	string address = 4;
+}
+
+message ParkingPlaceDto {
+	string id = 1;
+	int32 floor = 2;
+	ParkingDto parking = 3;
+	google.protobuf.StringValue vehicleId = 4;
+	bool isWithElectricityCharge = 5;
+}
+
+message SubscriptionDto {
+	string id = 1;
+	ParkingPlaceDto parkingPlace = 2;
+	string vehicleId = 3;
+	google.protobuf.Timestamp parkingStartDate = 4;
+	google.protobuf.Timestamp parkingEndDate = 5;
+	bool isActive = 6;
 }
 
 message CreateParkingRq {
@@ -59,7 +108,16 @@ message ParkVehicleRq {
 
 message ParkVehicleRs {
 	bool success = 1;
-	string Error = 2;
+	string error = 2;
+}
+
+message TakeVehicleRq {
+	string vehicleId = 1;
+}
+
+message TakeVehicleRs {
+	bool success = 1;
+	string error = 2;
 }
 
 message GetAllParkingsRq {
@@ -87,6 +145,46 @@ message DeleteParkingRq {
 }
 
 message DeleteParkingRs {
+	bool success = 1;
+	string error = 2;
+}
+
+message GetAllSubscriptionsRq {
+
+}
+
+message GetAllSubscriptionsRs {
+	bool success = 1;
+	string error = 2;
+	repeated SubscriptionDto subscriptions = 3;
+}
+
+message GetVehicleSubscriptionHistoryRq {
+	string vehicleId = 1;
+}
+
+message GetVehicleSubscriptionHistoryRs {
+	bool success = 1;
+	string error = 2;
+	repeated SubscriptionDto subscriptions = 3;
+}
+
+message GetAllParkingPlacesRq {
+
+}
+
+message GetAllParkingPlacesRs {
+	bool success = 1;
+	string error = 2;
+	repeated ParkingPlaceDto parkingPlaces = 3;
+}
+
+message UpdateParkingPlaceRq {
+	string id = 1;
+	bool isWithElectricityCharge = 2;
+}
+
+message UpdateParkingPlaceRs {
 	bool success = 1;
 	string error = 2;
 }

@@ -20,7 +20,6 @@ namespace Application.Features.Queries.GetVehicle
 
         public async Task<Vehicle> Handle(GetVehicleQuery query)
         {
-
             var vehicle = await _vehicleRepository.FindByIdAsync(query.Id);
             if (vehicle == null)
             {

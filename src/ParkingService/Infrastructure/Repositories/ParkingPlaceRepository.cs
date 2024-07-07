@@ -21,6 +21,11 @@ namespace Infrastructure.Repositories
             return _context.ParkingPlaces.Add(parkingPlace).Entity;
         }
 
+        public IEnumerable<ParkingPlace> GetAll()
+        {
+            return _context.ParkingPlaces;
+        }
+
         public async Task<ParkingPlace?> FindByIdAsync(Guid id)
         {
             return await _context.ParkingPlaces

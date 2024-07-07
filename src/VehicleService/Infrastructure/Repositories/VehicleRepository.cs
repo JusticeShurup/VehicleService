@@ -30,6 +30,7 @@ namespace Infrastructure.Repositories
         public async Task<Vehicle?> FindByIdAsync(Guid id)
         {
             return await _context.Vehicles
+                .Include(vehicle => vehicle.Engine)
                 .Where(vehicle => vehicle.Id == id)
                 .FirstOrDefaultAsync();
         }

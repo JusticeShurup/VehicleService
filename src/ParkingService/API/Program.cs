@@ -6,6 +6,7 @@ using System.Reflection;
 using Infrastructure.Bus.Command;
 using Application.Base.Command;
 using Application.Base.Query;
+using API.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -22,6 +23,9 @@ builder.Services.AddGrpcClient<Vehicles.VehiclesClient>(options =>
 {
     options.Address = new Uri("https://localhost:7154");
 });
+
+
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddCommandHandlers(typeof(Command).Assembly);
 builder.Services.AddScoped<ICommandBus, InMemoryCommandBus>();
@@ -37,5 +41,6 @@ app.UseSwaggerUI(c =>
 });
 
 app.MapGrpcService<ParkingService>();
+app.MapGrpcService<SubscriptionService>();
 
 app.Run();

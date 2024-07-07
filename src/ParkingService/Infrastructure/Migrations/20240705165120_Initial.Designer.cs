@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ParkingContext))]
-    [Migration("20240702134018_Initial")]
+    [Migration("20240705165120_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -71,6 +71,34 @@ namespace Infrastructure.Migrations
                     b.ToTable("ParkingPlaces");
                 });
 
+            modelBuilder.Entity("Domain.Subscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ParkingEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ParkingPlaceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ParkingStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParkingPlaceId");
+
+                    b.ToTable("Subscriptions");
+                });
+
             modelBuilder.Entity("Domain.ParkingPlace", b =>
                 {
                     b.HasOne("Domain.Parking", "Parking")
@@ -80,6 +108,17 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Parking");
+                });
+
+            modelBuilder.Entity("Domain.Subscription", b =>
+                {
+                    b.HasOne("Domain.ParkingPlace", "ParkingPlace")
+                        .WithMany()
+                        .HasForeignKey("ParkingPlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParkingPlace");
                 });
 
             modelBuilder.Entity("Domain.Parking", b =>

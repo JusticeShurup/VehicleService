@@ -9,15 +9,18 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configurations
 {
-    public class AbonementConfiguration
-        : IEntityTypeConfiguration<Abonement>
+    public class SubscriptionConfiguration
+        : IEntityTypeConfiguration<Subscription>
     {
-        public void Configure(EntityTypeBuilder<Abonement> builder)
+        public void Configure(EntityTypeBuilder<Subscription> builder)
         {
             builder.HasKey(x => x.Id);
 
             builder.HasOne(p => p.ParkingPlace)
-                .WithMany();
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            
         }
     }
 }
